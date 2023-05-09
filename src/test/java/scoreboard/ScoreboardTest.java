@@ -79,7 +79,7 @@ class ScoreboardTest {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //given
             scoreboard.startNewGame(null, AWAY_TEAM_NAME);
         });
@@ -91,7 +91,7 @@ class ScoreboardTest {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //given
             scoreboard.startNewGame(HOME_TEAM_NAME, null);
         });
@@ -103,7 +103,7 @@ class ScoreboardTest {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //given
             scoreboard.startNewGame("", AWAY_TEAM_NAME);
         });
@@ -115,7 +115,7 @@ class ScoreboardTest {
         Scoreboard scoreboard = new Scoreboard();
 
         //given
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //given
             scoreboard.startNewGame(HOME_TEAM_NAME, "");
         });

@@ -2,6 +2,7 @@ package scoreboard;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import scoreboard.exceptions.MatchAlreadyStartedException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
@@ -18,6 +19,14 @@ public class Scoreboard {
 
     public void startNewGame(String homeTeam, String awayTeam) {
         log.info("Starting new game for homeTeam: {} and awayTeam: {}", homeTeam, awayTeam);
+
+        if (Strings.isEmpty(homeTeam)) {
+            log.error("HomeTeam cannot be empty!");
+            throw new IllegalArgumentException();
+        } else if (Strings.isEmpty(awayTeam)) {
+            log.error("AwayTeam cannot be empty!");
+            throw new IllegalArgumentException();
+        }
 
         if (scores.containsKey(homeTeam) && scores.get(homeTeam).equals(awayTeam)) {
             log.error("Teams {} and {} have already started a match!", homeTeam, awayTeam);
