@@ -2,25 +2,25 @@ package scoreboard;
 
 import java.util.Objects;
 
-public class Team {
+public class Match {
 
     private final String homeTeam;
     private final String awayTeam;
     private int homeTeamScore;
     private int awayTeamScore;
 
-    public static Team newTeam(String homeTeam, String awayTeam) {
-        return new Team(homeTeam, awayTeam);
+    public static Match newTeam(String homeTeam, String awayTeam) {
+        return new Match(homeTeam, awayTeam);
     }
 
-    public Team(String homeTeam, String awayTeam) {
+    public Match(String homeTeam, String awayTeam) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         homeTeamScore = 0;
         awayTeamScore = 0;
     }
 
-    Team(String homeTeam, String awayTeam, int homeTeamScore, int awayTeamScore) {
+    Match(String homeTeam, String awayTeam, int homeTeamScore, int awayTeamScore) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeTeamScore = homeTeamScore;
@@ -55,8 +55,8 @@ public class Team {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Team team = (Team) o;
-        return homeTeamScore == team.homeTeamScore && awayTeamScore == team.awayTeamScore && Objects.equals(homeTeam, team.homeTeam) && Objects.equals(awayTeam, team.awayTeam);
+        Match match = (Match) o;
+        return homeTeamScore == match.homeTeamScore && awayTeamScore == match.awayTeamScore && Objects.equals(homeTeam, match.homeTeam) && Objects.equals(awayTeam, match.awayTeam);
     }
 
     @Override

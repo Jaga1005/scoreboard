@@ -25,8 +25,8 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        var expected = new HashMap<String, Team>();
-        expected.put(HOME_TEAM_NAME, Team.newTeam(HOME_TEAM_NAME, AWAY_TEAM_NAME));
+        var expected = new HashMap<String, Match>();
+        expected.put(HOME_TEAM_NAME, Match.newTeam(HOME_TEAM_NAME, AWAY_TEAM_NAME));
 
         assertEquals(expected, scoreboard.getScores());
     }
@@ -144,9 +144,9 @@ class ScoreboardTest {
         //given
         scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
         //then
-        var expected = new HashMap<String, Team>();
-        expected.put(HOME_TEAM_NAME, new Team(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
-        expected.put(HOME_TEAM_NAME_2, new Team(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
+        var expected = new HashMap<String, Match>();
+        expected.put(HOME_TEAM_NAME, new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
+        expected.put(HOME_TEAM_NAME_2, new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
 
 
         assertEquals(expected, scoreboard.getScores());
@@ -161,9 +161,9 @@ class ScoreboardTest {
         //given
         scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
         //then
-        var expected = new HashMap<String, Team>();
-        Team team = new Team(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
-        expected.put(HOME_TEAM_NAME, team);
+        var expected = new HashMap<String, Match>();
+        Match match = new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
+        expected.put(HOME_TEAM_NAME, match);
 
         assertEquals(expected, scoreboard.getScores());
     }
@@ -221,7 +221,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenUpdateGame_givenNotExistingMatchWithNegativeNumberOnHomeTeamScore_thenThrowException() {
+    void whenUpdateGame_givenExistingMatchWithNegativeNumberOnHomeTeamScore_thenThrowException() {
         //when
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -229,12 +229,12 @@ class ScoreboardTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> {
             //given
-            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME_2, -1, 2);
+            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, -1, 2);
         });
     }
 
     @Test
-    void whenUpdateGame_givenNotExistingMatchWithNegativeNumberOnAwayTeamScore_thenThrowException() {
+    void whenUpdateGame_givenExistingMatchWithNegativeNumberOnAwayTeamScore_thenThrowException() {
         //when
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -242,7 +242,7 @@ class ScoreboardTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> {
             //given
-            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME_2, 1, -2);
+            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, -2);
         });
     }
 }

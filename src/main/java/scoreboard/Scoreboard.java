@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import scoreboard.exceptions.MatchAlreadyStartedException;
+import scoreboard.exceptions.MatchDoesntExistException;
 import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class Scoreboard {
     private static final Logger log = LogManager.getLogger("scoreboard");
-    private final Map<String, Team> scores;
+    private final Map<String, Match> scores;
 
     public Scoreboard() {
         scores = new HashMap<>();
@@ -24,12 +25,14 @@ public class Scoreboard {
         validateTeamsNames(homeTeam, awayTeam);
         validateExistingGames(homeTeam, awayTeam);
 
-        scores.put(homeTeam, Team.newTeam(homeTeam, awayTeam));
+        scores.put(homeTeam, Match.newTeam(homeTeam, awayTeam));
 
         log.info("Game for {} and {} added successfully", homeTeam, awayTeam);
     }
 
     private void validateExistingGames(String homeTeam, String awayTeam) {
+        log.info("Validate existing games");
+
         checkIfTeamsHaveAlreadyStartedGame(homeTeam, awayTeam);
         checkIfTeamHasAlreadyStartedDifferentGame(homeTeam);
         checkIfTeamHasAlreadyStartedDifferentGame(awayTeam);
@@ -50,6 +53,8 @@ public class Scoreboard {
     }
 
     private static void validateTeamsNames(String homeTeam, String awayTeam) {
+        log.info("Validate team names");
+
         validateTeamName(homeTeam);
         validateTeamName(awayTeam);
         validateIfTeamsAreDifferent(homeTeam, awayTeam);
@@ -78,7 +83,29 @@ public class Scoreboard {
     }
 
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-        throw new UnsupportedOperationException();
+        if (!scores.containsKey(homeTeam)) {
+            log.error("HomeTeam {} doesn't exist!", homeTeam);
+            throw new MatchDoesntExistException();
+        }
+
+        if (!scores.get(homeTeam).getAwayTeam().equalsIgnoreCase(awayTeam)) {
+            log.error("Match between HomeTeam {} and AwayTeam {} doesn't exist", homeTeam, awayTeam);
+            throw new MatchDoesntExistException();
+        }
+
+        if (homeScore < 0) {
+            log.error("Score for homeTeam cannot be a negative number! Current value: {}", homeScore);
+            throw new IllegalArgumentException();
+        }
+
+        if (awayScore < 0) {
+            log.error("Score for awayTeam cannot be a negative number! Current value: {}", awayScore);
+            throw new IllegalArgumentException();
+        }
+
+        Match game = scores.get(homeTeam);
+        game.setHomeTeamScore(homeScore);
+        game.setAwayTeamScore(awayScore);
     }
 
     public void finishGame(String homeTeam, String awayTeam) {
@@ -89,7 +116,7 @@ public class Scoreboard {
         throw new UnsupportedOperationException();
     }
 
-    Map<String, Team> getScores() {
+    Map<String, Match> getScores() {
         return scores;
     }
 }
