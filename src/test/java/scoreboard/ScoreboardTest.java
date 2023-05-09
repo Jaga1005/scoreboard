@@ -6,8 +6,12 @@ import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.MatchDoesntExistException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
+import static java.util.Collections.EMPTY_LIST;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScoreboardTest {
@@ -312,5 +316,55 @@ class ScoreboardTest {
             //when
             scoreboard.finishGame(HOME_TEAM_NAME, null);
         });
+    }
+
+    @Test
+    void whenGetSummary_givenEmptyScoreboard_thenReturnEmptyList() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+
+        //when
+        var actualList = scoreboard.getSummary();
+
+        //then
+        assertEquals(EMPTY_LIST, actualList);
+    }
+
+    @Test
+    void whenGetSummary_givenScoreboardWithDifferentTotalScore_thenReturnListSortedByTotalScore() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 3, 2);
+
+        //when
+        var actualList = scoreboard.getSummary();
+
+        //then
+        var expectedList = new ArrayList<Match>();
+        expectedList.add(new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 3, 2));
+        expectedList.add(new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    void whenGetSummary_givenScoreboardWithTheSameTotalScore_thenReturnListSortedByTimestamp() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+
+        //when
+        var actualList = scoreboard.getSummary();
+
+        //then
+        var expectedList = new ArrayList<Match>();
+        expectedList.add(new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
+        expectedList.add(new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 1, 2));
+        assertEquals(expectedList, actualList);
     }
 }

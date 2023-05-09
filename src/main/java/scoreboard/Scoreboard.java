@@ -9,6 +9,7 @@ import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Scoreboard {
@@ -116,7 +117,7 @@ public class Scoreboard {
         scores.remove(homeTeam);
     }
 
-    public void getSummary() {
+    public List<Match> getSummary() {
         throw new UnsupportedOperationException();
     }
 
