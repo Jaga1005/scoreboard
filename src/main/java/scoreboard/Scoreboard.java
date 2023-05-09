@@ -8,6 +8,7 @@ import scoreboard.exceptions.MatchDoesntExistException;
 import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +119,9 @@ public class Scoreboard {
     }
 
     public List<Match> getSummary() {
-        throw new UnsupportedOperationException();
+        log.info("Get summary");
+
+        return new ArrayList<>(scores.values());
     }
 
     Map<String, Match> getScores() {
