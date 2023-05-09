@@ -5,10 +5,9 @@
 
 Start new game for HomeTeam and AwayTeam with score 0-0
 
-- When game already exists for the required pair, it throws an error
+- When game already exists for HomeTeam or AwayTeam, it throws an error
 - When HomeTeam is equal to AwayTeam, it throws an error
 - When HomeTeam or AwayTeam is null or empty, it throws an error
-
 
 `UpdateScore(HomeTeam, AwayTeam, HomeTeamScore, AwayTeamScore)`
 

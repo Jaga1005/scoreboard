@@ -3,6 +3,7 @@ package scoreboard;
 import org.junit.jupiter.api.Test;
 import scoreboard.exceptions.MatchAlreadyStartedException;
 import scoreboard.exceptions.NotUniquePairException;
+import scoreboard.exceptions.TeamAlreadyInMatchException;
 
 import java.util.HashMap;
 
@@ -10,7 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ScoreboardTest {
     private static final String HOME_TEAM_NAME = "TeamA";
+    private static final String HOME_TEAM_NAME_2 = "TeamD";
     private static final String AWAY_TEAM_NAME = "TeamB";
+    private static final String AWAY_TEAM_NAME_2 = "TeamC";
 
     @Test
     void whenCreateNewGame_givenUniquePair_thenAddNewPairToScoreboard() {
@@ -25,6 +28,36 @@ class ScoreboardTest {
         expected.put(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         assertEquals(expected, scoreboard.getScores());
+    }
+
+    @Test
+    void whenCreateNewGame_givenTwoMatchesWithTheSameHomeTeam_thenAddNewPairToScoreboard() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+
+        //given
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(TeamAlreadyInMatchException.class, () -> {
+            //given
+            scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME_2);
+        });
+    }
+
+    @Test
+    void whenCreateNewGame_givenTwoMatchesWithTheSameAwayTeam_thenAddNewPairToScoreboard() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+
+        //given
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(TeamAlreadyInMatchException.class, () -> {
+            //given
+            scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME);
+        });
     }
 
     @Test
