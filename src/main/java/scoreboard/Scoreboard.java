@@ -8,10 +8,7 @@ import scoreboard.exceptions.MatchDoesntExistException;
 import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Scoreboard {
     private static final Logger log = LogManager.getLogger("scoreboard");
@@ -121,7 +118,13 @@ public class Scoreboard {
     public List<Match> getSummary() {
         log.info("Get summary");
 
-        return new ArrayList<>(scores.values());
+        ArrayList<Match> list = new ArrayList<>(scores.values());
+        list.sort((match1, match2) -> {
+            int compareTotalScores = Integer.compare(match2.getTotalScore(), match1.getTotalScore());
+            return compareTotalScores;
+        });
+
+        return list;
     }
 
     Map<String, Match> getScores() {

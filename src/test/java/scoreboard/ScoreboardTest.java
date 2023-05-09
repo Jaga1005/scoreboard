@@ -337,7 +337,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
         scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
         scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
-        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 3, 2);
+        scoreboard.updateGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 3, 2);
 
         //when
         var actualList = scoreboard.getSummary();

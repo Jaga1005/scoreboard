@@ -77,6 +77,10 @@ public class Match {
         }
     }
 
+    public int getTotalScore() {
+        return homeTeamScore + awayTeamScore;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
