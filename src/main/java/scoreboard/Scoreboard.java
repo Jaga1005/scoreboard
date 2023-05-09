@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class Scoreboard {
     private static final Logger log = LogManager.getLogger("scoreboard");
-    private final Map<String, String> scores;
+    private final Map<String, Team> scores;
 
     public Scoreboard() {
         scores = new HashMap<>();
@@ -24,7 +24,7 @@ public class Scoreboard {
         validateTeamsNames(homeTeam, awayTeam);
         validateExistingGames(homeTeam, awayTeam);
 
-        scores.put(homeTeam, awayTeam);
+        scores.put(homeTeam, Team.newTeam(homeTeam, awayTeam));
 
         log.info("Game for {} and {} added successfully", homeTeam, awayTeam);
     }
@@ -43,7 +43,7 @@ public class Scoreboard {
     }
 
     private void checkIfTeamsHaveAlreadyStartedGame(String homeTeam, String awayTeam) {
-        if (scores.containsKey(homeTeam) && scores.get(homeTeam).equals(awayTeam)) {
+        if (scores.containsKey(homeTeam) && scores.get(homeTeam).getAwayTeam().equals(awayTeam)) {
             log.error("Teams {} and {} have already started a match!", homeTeam, awayTeam);
             throw new MatchAlreadyStartedException();
         }
@@ -70,7 +70,11 @@ public class Scoreboard {
     }
 
     private boolean checkIfTeamHasStartedGame(String team) {
-        return scores.containsKey(team) || scores.containsValue(team);
+        return scores.containsKey(team) || checkIfTeamPlaysAsAwayTeam(team);
+    }
+
+    private boolean checkIfTeamPlaysAsAwayTeam(String team) {
+        return scores.values().stream().anyMatch(t -> t.getAwayTeam().equalsIgnoreCase(team));
     }
 
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
@@ -85,7 +89,7 @@ public class Scoreboard {
         throw new UnsupportedOperationException();
     }
 
-    Map<String, String> getScores() {
+    Map<String, Team> getScores() {
         return scores;
     }
 }

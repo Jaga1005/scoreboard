@@ -25,8 +25,8 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        var expected = new HashMap<String, String>();
-        expected.put(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        var expected = new HashMap<String, Team>();
+        expected.put(HOME_TEAM_NAME, Team.newTeam(HOME_TEAM_NAME, AWAY_TEAM_NAME));
 
         assertEquals(expected, scoreboard.getScores());
     }
