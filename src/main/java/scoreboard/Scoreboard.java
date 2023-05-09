@@ -121,6 +121,9 @@ public class Scoreboard {
         ArrayList<Match> list = new ArrayList<>(scores.values());
         list.sort((match1, match2) -> {
             int compareTotalScores = Integer.compare(match2.getTotalScore(), match1.getTotalScore());
+            if (compareTotalScores == 0) {
+                return Long.compare(match1.getStartTime(), match2.getStartTime());
+            }
             return compareTotalScores;
         });
 

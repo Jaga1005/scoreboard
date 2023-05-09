@@ -9,6 +9,7 @@ public class Match {
     private static final Logger log = LogManager.getLogger("match");
     private final String homeTeam;
     private final String awayTeam;
+    private final long startTime;
     private int homeTeamScore;
     private int awayTeamScore;
 
@@ -19,6 +20,7 @@ public class Match {
     public Match(String homeTeam, String awayTeam) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
+        this.startTime = System.nanoTime();
         homeTeamScore = 0;
         awayTeamScore = 0;
     }
@@ -28,6 +30,7 @@ public class Match {
         this.awayTeam = awayTeam;
         this.homeTeamScore = homeTeamScore;
         this.awayTeamScore = awayTeamScore;
+        this.startTime = System.nanoTime();
     }
 
     public void setHomeTeamScore(int homeTeamScore) {
@@ -52,6 +55,10 @@ public class Match {
 
     public String getAwayTeam() {
         return awayTeam;
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 
     public void updateScore(int homeScore, int awayScore) {

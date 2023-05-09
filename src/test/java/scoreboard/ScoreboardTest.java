@@ -2,17 +2,16 @@ package scoreboard;
 
 import org.junit.jupiter.api.Test;
 import scoreboard.exceptions.MatchAlreadyStartedException;
-import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.MatchDoesntExistException;
+import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
 import static java.util.Collections.EMPTY_LIST;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ScoreboardTest {
     private static final String HOME_TEAM_NAME = "TeamA";
@@ -356,7 +355,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
         scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
         scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
-        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+        scoreboard.updateGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 1, 2);
 
         //when
         var actualList = scoreboard.getSummary();
