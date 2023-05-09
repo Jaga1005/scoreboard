@@ -111,6 +111,7 @@ public class Scoreboard {
         log.info("Finish game between {} and {}", homeTeam, awayTeam);
 
         validateIfHomeTeamExists(homeTeam);
+        validateIfMatchExists(homeTeam, awayTeam);
 
         scores.remove(homeTeam);
     }
