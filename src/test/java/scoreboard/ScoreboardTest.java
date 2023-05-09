@@ -162,8 +162,7 @@ class ScoreboardTest {
         scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
         //then
         var expected = new HashMap<String, Match>();
-        Match match = new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
-        expected.put(HOME_TEAM_NAME, match);
+        expected.put(HOME_TEAM_NAME, new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0));
 
         assertEquals(expected, scoreboard.getScores());
     }
@@ -243,6 +242,62 @@ class ScoreboardTest {
         assertThrows(IllegalArgumentException.class, () -> {
             //given
             scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, -2);
+        });
+    }
+
+    @Test
+    void whenFinishGame_givenExistingMatch_thenRemoveGameFromScoreboard() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+
+        //when
+        scoreboard.finishGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        var expected = new HashMap<String, Match>();
+        expected.put(HOME_TEAM_NAME_2, new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
+
+        assertEquals(expected, scoreboard.getScores());
+    }
+
+    @Test
+    void whenFinishGame_givenNotExistingMatch_thenThrowException() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(MatchDoesntExistException.class, () -> {
+            //when
+            scoreboard.finishGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME);
+        });
+    }
+
+    @Test
+    void whenFinishGame_givenNotExistingMatchWithNullHomeTeam_thenThrowException() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(IllegalArgumentException.class, () -> {
+            //when
+            scoreboard.finishGame(null, AWAY_TEAM_NAME);
+        });
+    }
+
+    @Test
+    void whenFinishGame_givenNotExistingMatchWithNullAwayTeam_thenThrowException() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(IllegalArgumentException.class, () -> {
+            //when
+            scoreboard.finishGame(HOME_TEAM_NAME, null);
         });
     }
 }
