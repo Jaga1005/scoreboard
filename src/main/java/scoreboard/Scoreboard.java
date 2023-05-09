@@ -21,34 +21,55 @@ public class Scoreboard {
     public void startNewGame(String homeTeam, String awayTeam) {
         log.info("Starting new game for homeTeam: {} and awayTeam: {}", homeTeam, awayTeam);
 
-        if (Strings.isEmpty(homeTeam)) {
-            log.error("HomeTeam cannot be empty!");
-            throw new IllegalArgumentException();
-        } else if (Strings.isEmpty(awayTeam)) {
-            log.error("AwayTeam cannot be empty!");
-            throw new IllegalArgumentException();
-        } else if(homeTeam.equals(awayTeam)) {
-            log.error("HomeTeam cannot be the same as awayTeam!");
-            throw new NotUniquePairException();
-        }
-
-        if (scores.containsKey(homeTeam) && scores.get(homeTeam).equals(awayTeam)) {
-            log.error("Teams {} and {} have already started a match!", homeTeam, awayTeam);
-            throw new MatchAlreadyStartedException();
-        } else if (checkIfTeamHasStartedMatch(homeTeam)) {
-            log.error("Team {} has already started a match!", homeTeam);
-            throw new TeamAlreadyInMatchException();
-        } else if (checkIfTeamHasStartedMatch(awayTeam)) {
-            log.error("Team {} has already started a match!", awayTeam);
-            throw new TeamAlreadyInMatchException();
-        }
+        validateTeamsNames(homeTeam, awayTeam);
+        validateExistingGames(homeTeam, awayTeam);
 
         scores.put(homeTeam, awayTeam);
 
         log.info("Game for {} and {} added successfully", homeTeam, awayTeam);
     }
 
-    private boolean checkIfTeamHasStartedMatch(String team) {
+    private void validateExistingGames(String homeTeam, String awayTeam) {
+        checkIfTeamsHaveAlreadyStartedGame(homeTeam, awayTeam);
+        checkIfTeamHasAlreadyStartedDifferentGame(homeTeam);
+        checkIfTeamHasAlreadyStartedDifferentGame(awayTeam);
+    }
+
+    private void checkIfTeamHasAlreadyStartedDifferentGame(String team) {
+        if (checkIfTeamHasStartedGame(team)) {
+            log.error("Team {} has already started a match!", team);
+            throw new TeamAlreadyInMatchException();
+        }
+    }
+
+    private void checkIfTeamsHaveAlreadyStartedGame(String homeTeam, String awayTeam) {
+        if (scores.containsKey(homeTeam) && scores.get(homeTeam).equals(awayTeam)) {
+            log.error("Teams {} and {} have already started a match!", homeTeam, awayTeam);
+            throw new MatchAlreadyStartedException();
+        }
+    }
+
+    private static void validateTeamsNames(String homeTeam, String awayTeam) {
+        validateTeamName(homeTeam);
+        validateTeamName(awayTeam);
+        validateIfTeamsAreDifferent(homeTeam, awayTeam);
+    }
+
+    private static void validateIfTeamsAreDifferent(String homeTeam, String awayTeam) {
+        if (homeTeam.equalsIgnoreCase(awayTeam)) {
+            log.error("HomeTeam cannot be the same as awayTeam!");
+            throw new NotUniquePairException();
+        }
+    }
+
+    private static void validateTeamName(String homeTeam) {
+        if (Strings.isEmpty(homeTeam)) {
+            log.error("Team name cannot be empty!");
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean checkIfTeamHasStartedGame(String team) {
         return scores.containsKey(team) || scores.containsValue(team);
     }
 
