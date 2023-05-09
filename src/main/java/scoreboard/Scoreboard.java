@@ -110,6 +110,8 @@ public class Scoreboard {
     public void finishGame(String homeTeam, String awayTeam) {
         log.info("Finish game between {} and {}", homeTeam, awayTeam);
 
+        validateIfHomeTeamExists(homeTeam);
+
         scores.remove(homeTeam);
     }
 

@@ -263,7 +263,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenFinishGame_givenNotExistingMatch_thenThrowException() {
+    void whenFinishGame_givenNotExistingMatchWithWrongHomeTeam_thenThrowException() {
         //given
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -272,6 +272,19 @@ class ScoreboardTest {
         assertThrows(MatchDoesntExistException.class, () -> {
             //when
             scoreboard.finishGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME);
+        });
+    }
+
+    @Test
+    void whenFinishGame_givenNotExistingMatchWithWrongAwayTeam_thenThrowException() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(MatchDoesntExistException.class, () -> {
+            //when
+            scoreboard.finishGame(HOME_TEAM_NAME, AWAY_TEAM_NAME_2);
         });
     }
 
