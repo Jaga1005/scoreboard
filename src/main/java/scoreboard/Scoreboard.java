@@ -83,7 +83,7 @@ public class Scoreboard {
     }
 
     public void updateGame(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-        log.info("Update score of a match");
+        log.info("Update score of a match {} {} - {} {}", homeTeam, homeScore, awayTeam, awayScore);
 
         validateIfHomeTeamExists(homeTeam);
         validateIfMatchExists(homeTeam, awayTeam);
@@ -108,7 +108,9 @@ public class Scoreboard {
     }
 
     public void finishGame(String homeTeam, String awayTeam) {
-        throw new UnsupportedOperationException();
+        log.info("Finish game between {} and {}", homeTeam, awayTeam);
+
+        scores.remove(homeTeam);
     }
 
     public void getSummary() {
