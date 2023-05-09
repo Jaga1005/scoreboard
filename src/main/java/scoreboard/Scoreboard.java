@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import scoreboard.exceptions.MatchAlreadyStartedException;
+import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
 import java.util.HashMap;
@@ -26,6 +27,9 @@ public class Scoreboard {
         } else if (Strings.isEmpty(awayTeam)) {
             log.error("AwayTeam cannot be empty!");
             throw new IllegalArgumentException();
+        } else if(homeTeam.equals(awayTeam)) {
+            log.error("HomeTeam cannot be the same as awayTeam!");
+            throw new NotUniquePairException();
         }
 
         if (scores.containsKey(homeTeam) && scores.get(homeTeam).equals(awayTeam)) {
