@@ -6,8 +6,7 @@ import scoreboard.exceptions.NotUniquePairException;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ScoreboardTest {
     private static final String HOME_TEAM_NAME = "TeamA";
@@ -25,7 +24,7 @@ class ScoreboardTest {
         var expected = new HashMap<String, String>();
         expected.put(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
-        assertSame(expected, scoreboard.getScores());
+        assertEquals(expected, scoreboard.getScores());
     }
 
     @Test
