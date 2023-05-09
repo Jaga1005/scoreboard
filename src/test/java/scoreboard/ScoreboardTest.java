@@ -3,6 +3,7 @@ package scoreboard;
 import org.junit.jupiter.api.Test;
 import scoreboard.exceptions.MatchAlreadyStartedException;
 import scoreboard.exceptions.NotUniquePairException;
+import scoreboard.exceptions.MatchDoesntExistException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
 import java.util.HashMap;
@@ -114,7 +115,7 @@ class ScoreboardTest {
         //when
         Scoreboard scoreboard = new Scoreboard();
 
-        //given
+        //then
         assertThrows(IllegalArgumentException.class, () -> {
             //given
             scoreboard.startNewGame(HOME_TEAM_NAME, "");
@@ -126,9 +127,122 @@ class ScoreboardTest {
         //when
         Scoreboard scoreboard = new Scoreboard();
 
+        //then
         assertThrows(NotUniquePairException.class, () -> {
             //given
             scoreboard.startNewGame(HOME_TEAM_NAME, HOME_TEAM_NAME);
+        });
+    }
+
+    @Test
+    void whenUpdateGame_givenExistingMatch_thenUpdateTheGame() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+
+        //given
+        scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+        //then
+        var expected = new HashMap<String, Team>();
+        expected.put(HOME_TEAM_NAME, new Team(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
+        expected.put(HOME_TEAM_NAME_2, new Team(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
+
+
+        assertEquals(expected, scoreboard.getScores());
+    }
+
+    @Test
+    void whenUpdateGame_givenExistingMatchWithZeroValue_thenUpdateTheGame() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //given
+        scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
+        //then
+        var expected = new HashMap<String, Team>();
+        Team team = new Team(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
+        expected.put(HOME_TEAM_NAME, team);
+
+        assertEquals(expected, scoreboard.getScores());
+    }
+
+    @Test
+    void whenUpdateGame_givenWithNotExistingHomeTeamMatch_thenThrowException() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(MatchDoesntExistException.class, () -> {
+            //given
+            scoreboard.updateScore(HOME_TEAM_NAME_2, AWAY_TEAM_NAME, 1, 2);
+        });
+    }
+
+    @Test
+    void whenUpdateGame_givenWithNotExistingAwayTeamMatch_thenThrowException() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(MatchDoesntExistException.class, () -> {
+            //given
+            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME_2, 1, 2);
+        });
+    }
+
+    @Test
+    void whenUpdateGame_givenNotExistingMatchWithNullHomeTeam_thenThrowException() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(MatchDoesntExistException.class, () -> {
+            //given
+            scoreboard.updateScore(null, AWAY_TEAM_NAME, 1, 2);
+        });
+    }
+
+    @Test
+    void whenUpdateGame_givenNotExistingMatchWithNullAwayTeam_thenThrowException() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(MatchDoesntExistException.class, () -> {
+            //given
+            scoreboard.updateScore(HOME_TEAM_NAME, null, 1, 2);
+        });
+    }
+
+    @Test
+    void whenUpdateGame_givenNotExistingMatchWithNegativeNumberOnHomeTeamScore_thenThrowException() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(IllegalArgumentException.class, () -> {
+            //given
+            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME_2, -1, 2);
+        });
+    }
+
+    @Test
+    void whenUpdateGame_givenNotExistingMatchWithNegativeNumberOnAwayTeamScore_thenThrowException() {
+        //when
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(IllegalArgumentException.class, () -> {
+            //given
+            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME_2, 1, -2);
         });
     }
 }

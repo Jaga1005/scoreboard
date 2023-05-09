@@ -73,7 +73,7 @@ public class Scoreboard {
         return scores.containsKey(team) || scores.containsValue(team);
     }
 
-    public void updateScore(String homeTeam, String awayTeam) {
+    public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
         throw new UnsupportedOperationException();
     }
 
