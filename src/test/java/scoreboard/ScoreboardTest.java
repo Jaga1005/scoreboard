@@ -295,7 +295,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(MatchDoesntExistException.class, () -> {
             //when
             scoreboard.finishGame(null, AWAY_TEAM_NAME);
         });
@@ -308,7 +308,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(MatchDoesntExistException.class, () -> {
             //when
             scoreboard.finishGame(HOME_TEAM_NAME, null);
         });
