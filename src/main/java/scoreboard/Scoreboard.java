@@ -2,6 +2,7 @@ package scoreboard;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import scoreboard.exceptions.MatchAlreadyStartedException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
 import java.util.HashMap;
@@ -18,10 +19,13 @@ public class Scoreboard {
     public void startNewGame(String homeTeam, String awayTeam) {
         log.info("Starting new game for homeTeam: {} and awayTeam: {}", homeTeam, awayTeam);
 
-        if (checkIfTeamHasStartedMatch(homeTeam)) {
+        if (scores.containsKey(homeTeam) && scores.get(homeTeam).equals(awayTeam)) {
+            log.error("Teams {} and {} have already started a match!", homeTeam, awayTeam);
+            throw new MatchAlreadyStartedException();
+        } else if (checkIfTeamHasStartedMatch(homeTeam)) {
             log.error("Team {} has already started a match!", homeTeam);
             throw new TeamAlreadyInMatchException();
-        } else if ( checkIfTeamHasStartedMatch(awayTeam)) {
+        } else if (checkIfTeamHasStartedMatch(awayTeam)) {
             log.error("Team {} has already started a match!", awayTeam);
             throw new TeamAlreadyInMatchException();
         }
