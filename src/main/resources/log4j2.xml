@@ -2,7 +2,7 @@
 <Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %c:%L - %msg%n"/>
         </Console>
         <File name="File" fileName="./log/log4j2.log" append="true">
             <PatternLayout>
@@ -12,6 +12,9 @@
     </Appenders>
     <Loggers>
         <Logger name="scoreboard" level="info" additivity="true">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="match" level="info" additivity="true">
             <AppenderRef ref="Console"/>
         </Logger>
         <Root level="info">

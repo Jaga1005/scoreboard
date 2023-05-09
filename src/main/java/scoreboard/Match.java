@@ -1,9 +1,12 @@
 package scoreboard;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Objects;
 
 public class Match {
-
+    private static final Logger log = LogManager.getLogger("match");
     private final String homeTeam;
     private final String awayTeam;
     private int homeTeamScore;
@@ -49,6 +52,29 @@ public class Match {
 
     public String getAwayTeam() {
         return awayTeam;
+    }
+
+    public void updateScore(int homeScore, int awayScore) {
+        log.info("Update score of a match");
+
+        validateScores(homeScore, awayScore);
+
+        this.homeTeamScore = homeScore;
+        this.awayTeamScore = awayScore;
+    }
+
+    private static void validateScores(int homeScore, int awayScore) {
+        log.info("Validate scores");
+
+        validateScore(homeScore);
+        validateScore(awayScore);
+    }
+
+    private static void validateScore(int score) {
+        if (score < 0) {
+            log.error("Score for team cannot be a negative number! Current value: {}", score);
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

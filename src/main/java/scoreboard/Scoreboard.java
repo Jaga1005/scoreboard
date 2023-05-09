@@ -83,29 +83,28 @@ public class Scoreboard {
     }
 
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-        if (!scores.containsKey(homeTeam)) {
-            log.error("HomeTeam {} doesn't exist!", homeTeam);
-            throw new MatchDoesntExistException();
-        }
+        log.info("Update score of a match");
 
+        validateIfHomeTeamExists(homeTeam);
+        validateIfMatchExists(homeTeam, awayTeam);
+
+        scores.get(homeTeam).updateScore(homeScore, awayScore);
+
+        log.info("Match score updated!");
+    }
+
+    private void validateIfMatchExists(String homeTeam, String awayTeam) {
         if (!scores.get(homeTeam).getAwayTeam().equalsIgnoreCase(awayTeam)) {
             log.error("Match between HomeTeam {} and AwayTeam {} doesn't exist", homeTeam, awayTeam);
             throw new MatchDoesntExistException();
         }
+    }
 
-        if (homeScore < 0) {
-            log.error("Score for homeTeam cannot be a negative number! Current value: {}", homeScore);
-            throw new IllegalArgumentException();
+    private void validateIfHomeTeamExists(String homeTeam) {
+        if (!scores.containsKey(homeTeam)) {
+            log.error("HomeTeam {} doesn't exist!", homeTeam);
+            throw new MatchDoesntExistException();
         }
-
-        if (awayScore < 0) {
-            log.error("Score for awayTeam cannot be a negative number! Current value: {}", awayScore);
-            throw new IllegalArgumentException();
-        }
-
-        Match game = scores.get(homeTeam);
-        game.setHomeTeamScore(homeScore);
-        game.setAwayTeamScore(awayScore);
     }
 
     public void finishGame(String homeTeam, String awayTeam) {
