@@ -82,7 +82,7 @@ public class Scoreboard {
         return scores.values().stream().anyMatch(t -> t.getAwayTeam().equalsIgnoreCase(team));
     }
 
-    public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+    public void updateGame(String homeTeam, String awayTeam, int homeScore, int awayScore) {
         log.info("Update score of a match");
 
         validateIfHomeTeamExists(homeTeam);

@@ -142,7 +142,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
 
         //given
-        scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
         //then
         var expected = new HashMap<String, Match>();
         expected.put(HOME_TEAM_NAME, new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
@@ -159,7 +159,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //given
-        scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
+        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
         //then
         var expected = new HashMap<String, Match>();
         Match match = new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
@@ -177,7 +177,7 @@ class ScoreboardTest {
         //then
         assertThrows(MatchDoesntExistException.class, () -> {
             //given
-            scoreboard.updateScore(HOME_TEAM_NAME_2, AWAY_TEAM_NAME, 1, 2);
+            scoreboard.updateGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME, 1, 2);
         });
     }
 
@@ -190,7 +190,7 @@ class ScoreboardTest {
         //then
         assertThrows(MatchDoesntExistException.class, () -> {
             //given
-            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME_2, 1, 2);
+            scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME_2, 1, 2);
         });
     }
 
@@ -203,7 +203,7 @@ class ScoreboardTest {
         //then
         assertThrows(MatchDoesntExistException.class, () -> {
             //given
-            scoreboard.updateScore(null, AWAY_TEAM_NAME, 1, 2);
+            scoreboard.updateGame(null, AWAY_TEAM_NAME, 1, 2);
         });
     }
 
@@ -216,7 +216,7 @@ class ScoreboardTest {
         //then
         assertThrows(MatchDoesntExistException.class, () -> {
             //given
-            scoreboard.updateScore(HOME_TEAM_NAME, null, 1, 2);
+            scoreboard.updateGame(HOME_TEAM_NAME, null, 1, 2);
         });
     }
 
@@ -229,7 +229,7 @@ class ScoreboardTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> {
             //given
-            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, -1, 2);
+            scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, -1, 2);
         });
     }
 
@@ -242,7 +242,7 @@ class ScoreboardTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> {
             //given
-            scoreboard.updateScore(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, -2);
+            scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, -2);
         });
     }
 }
