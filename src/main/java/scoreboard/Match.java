@@ -33,14 +33,6 @@ public class Match {
         this.startTime = System.nanoTime();
     }
 
-    public void setHomeTeamScore(int homeTeamScore) {
-        this.homeTeamScore = homeTeamScore;
-    }
-
-    public void setAwayTeamScore(int awayTeamScore) {
-        this.awayTeamScore = awayTeamScore;
-    }
-
     public int getHomeTeamScore() {
         return homeTeamScore;
     }
@@ -90,10 +82,19 @@ public class Match {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         Match match = (Match) o;
-        return homeTeamScore == match.homeTeamScore && awayTeamScore == match.awayTeamScore && Objects.equals(homeTeam, match.homeTeam) && Objects.equals(awayTeam, match.awayTeam);
+
+        return homeTeamScore == match.homeTeamScore
+                && awayTeamScore == match.awayTeamScore
+                && Objects.equals(homeTeam, match.homeTeam)
+                && Objects.equals(awayTeam, match.awayTeam);
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.*;
 
 public class Scoreboard {
     private static final Logger log = LogManager.getLogger("scoreboard");
+    private static final int TOTAL_SCORES_ARE_EQUALS = 0;
     private final Map<String, Match> scores;
 
     public Scoreboard() {
@@ -116,18 +117,32 @@ public class Scoreboard {
     }
 
     public List<Match> getSummary() {
-        log.info("Get summary");
+        log.info("Get scoreboard summary");
 
         ArrayList<Match> list = new ArrayList<>(scores.values());
-        list.sort((match1, match2) -> {
-            int compareTotalScores = Integer.compare(match2.getTotalScore(), match1.getTotalScore());
-            if (compareTotalScores == 0) {
-                return Long.compare(match1.getStartTime(), match2.getStartTime());
-            }
-            return compareTotalScores;
-        });
+        sortList(list);
 
         return list;
+    }
+
+    private static void sortList(ArrayList<Match> list) {
+        list.sort((match1, match2) -> {
+            int compareTotalScores = compareByTotalScoreDesc(match1, match2);
+
+            if (compareTotalScores == TOTAL_SCORES_ARE_EQUALS) {
+                return compareByStartTimeAsc(match1, match2);
+            }
+
+            return compareTotalScores;
+        });
+    }
+
+    private static int compareByStartTimeAsc(Match match1, Match match2) {
+        return Long.compare(match1.getStartTime(), match2.getStartTime());
+    }
+
+    private static int compareByTotalScoreDesc(Match match1, Match match2) {
+        return Integer.compare(match2.getTotalScore(), match1.getTotalScore());
     }
 
     Map<String, Match> getScores() {
