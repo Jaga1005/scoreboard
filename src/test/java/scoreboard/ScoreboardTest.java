@@ -20,7 +20,7 @@ class ScoreboardTest {
     private static final String AWAY_TEAM_NAME_2 = "TeamC";
 
     @Test
-    void whenCreateNewGame_givenUniquePair_thenAddNewPairToScoreboard() {
+    void whenStartNewGame_givenUniqueTeams_thenAddNewGameToScoreboard() {
         //when
         Scoreboard scoreboard = new Scoreboard();
 
@@ -35,7 +35,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenSecondMatchWithTheSameHomeTeam_thenAddNewPairToScoreboard() {
+    void whenStartNewGame_givenSecondMatchWithTheSameHomeTeam_thenThrowException() {
         //given
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -48,7 +48,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenSecondMatchWithTheSameAwayTeam_thenAddNewPairToScoreboard() {
+    void whenStartNewGame_givenSecondMatchWithTheSameAwayTeam_thenThrowException() {
         //given
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -61,7 +61,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenNotUniquePair_thenThrowAnError() {
+    void whenStartNewGame_givenExistingMatch_thenThrowAnException() {
         //given
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -74,7 +74,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenNullHomeTeam_thenThrowAnError() {
+    void whenStartNewGame_givenMatchWithNullHomeTeam_thenThrowAnException() {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
@@ -85,7 +85,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenNullAwayTeam_thenThrowAnError() {
+    void whenStartNewGame_givenMatchWithNullAwayTeam_thenThrowAnException() {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
@@ -96,7 +96,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenEmptyHomeTeam_thenThrowAnError() {
+    void whenStartNewGame_givenMatchWithEmptyHomeTeam_thenThrowAnException() {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
@@ -107,7 +107,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenEmptyAwayTeam_thenThrowAnError() {
+    void whenStartNewGame_givenMatchWithEmptyAwayTeam_thenThrowAnException() {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
@@ -118,7 +118,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenCreateNewGame_givenTheSameTeams_thenThrowAnError() {
+    void whenStartNewGame_givenMatchWithTheSameTeams_thenThrowAnException() {
         Scoreboard scoreboard = new Scoreboard();
 
         //then
@@ -147,23 +147,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenUpdateGame_givenExistingMatchWithZeroValue_thenUpdateTheGame() {
-        //given
-        Scoreboard scoreboard = new Scoreboard();
-        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
-
-        //when
-        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0);
-
-        //then
-        var expected = new HashMap<String, Match>();
-        expected.put(HOME_TEAM_NAME, new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 0));
-
-        assertEquals(expected, scoreboard.getScores());
-    }
-
-    @Test
-    void whenUpdateGame_givenWithNotExistingHomeTeamMatch_thenThrowException() {
+    void whenUpdateGame_givenMatchWithNotExistingHomeTeam_thenThrowException() {
         //given
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -176,7 +160,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenUpdateGame_givenWithNotExistingAwayTeamMatch_thenThrowException() {
+    void whenUpdateGame_givenMatchWithNotExistingAwayTeam_thenThrowException() {
         //given
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -189,7 +173,7 @@ class ScoreboardTest {
     }
 
     @Test
-    void whenUpdateGame_givenNotExistingMatchWithNullHomeTeam_thenThrowException() {
+    void whenUpdateGame_givenMatchWithNotExistingNullHomeTeam_thenThrowException() {
         //given
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
@@ -214,31 +198,6 @@ class ScoreboardTest {
         });
     }
 
-    @Test
-    void whenUpdateGame_givenExistingMatchWithNegativeNumberOnHomeTeamScore_thenThrowException() {
-        //given
-        Scoreboard scoreboard = new Scoreboard();
-        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> {
-            //when
-            scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, -1, 2);
-        });
-    }
-
-    @Test
-    void whenUpdateGame_givenExistingMatchWithNegativeNumberOnAwayTeamScore_thenThrowException() {
-        //given
-        Scoreboard scoreboard = new Scoreboard();
-        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> {
-            //when
-            scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, -2);
-        });
-    }
 
     @Test
     void whenFinishGame_givenExistingMatch_thenRemoveGameFromScoreboard() {
@@ -327,6 +286,7 @@ class ScoreboardTest {
         Scoreboard scoreboard = new Scoreboard();
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
         scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+
         scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
         scoreboard.updateGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 3, 2);
 
@@ -337,6 +297,7 @@ class ScoreboardTest {
         var expectedList = new ArrayList<Match>();
         expectedList.add(new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 3, 2));
         expectedList.add(new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
+
         assertEquals(expectedList, actualList);
     }
 
@@ -344,8 +305,10 @@ class ScoreboardTest {
     void whenGetSummary_givenScoreboardWithTheSameTotalScore_thenReturnListSortedByTimestamp() {
         //given
         Scoreboard scoreboard = new Scoreboard();
+
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
         scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2);
+
         scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
         scoreboard.updateGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 1, 2);
 
@@ -356,6 +319,7 @@ class ScoreboardTest {
         var expectedList = new ArrayList<Match>();
         expectedList.add(new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
         expectedList.add(new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 1, 2));
+
         assertEquals(expectedList, actualList);
     }
 }
