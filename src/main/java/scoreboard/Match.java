@@ -62,11 +62,12 @@ public class Match {
         this.awayTeamScore = awayScore;
     }
 
-    private static void validateScores(int homeScore, int awayScore) {
+    private static void validateScores(int... scores) {
         log.info("Validate scores");
 
-        validateScore(homeScore);
-        validateScore(awayScore);
+        for (int score : scores) {
+            validateScore(score);
+        }
     }
 
     private static void validateScore(int score) {

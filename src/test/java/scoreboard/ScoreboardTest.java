@@ -14,10 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ScoreboardTest {
-    private static final String HOME_TEAM_NAME = "TeamA";
-    private static final String HOME_TEAM_NAME_2 = "TeamD";
-    private static final String AWAY_TEAM_NAME = "TeamB";
-    private static final String AWAY_TEAM_NAME_2 = "TeamC";
+    private static final String HOME_TEAM_NAME = "Gondor";
+    private static final String HOME_TEAM_NAME_LOWER_CASE = "gondor";
+    private static final String HOME_TEAM_NAME_2 = "Rohan";
+    private static final String AWAY_TEAM_NAME = "Mordor";
+    private static final String AWAY_TEAM_NAME_LOWER_CASE = "mordor";
+    private static final String AWAY_TEAM_NAME_2 = "Shire";
 
     @Test
     void whenStartNewGame_givenUniqueTeams_thenAddNewGameToScoreboard() {
@@ -32,6 +34,32 @@ class ScoreboardTest {
         expected.put(HOME_TEAM_NAME, Match.newTeam(HOME_TEAM_NAME, AWAY_TEAM_NAME));
 
         assertEquals(expected, scoreboard.getScores());
+    }
+
+    @Test
+    void whenStartNewGame_givenSecondMatchWithTheSameHomeTeamButLowerCase_thenThrowException() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(TeamAlreadyInMatchException.class, () -> {
+            //when
+            scoreboard.startNewGame(HOME_TEAM_NAME_LOWER_CASE, AWAY_TEAM_NAME);
+        });
+    }
+
+    @Test
+    void whenStartNewGame_givenSecondMatchWithTheSameAwayTeamButLowerCase_thenThrowException() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        assertThrows(TeamAlreadyInMatchException.class, () -> {
+            //when
+            scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME_LOWER_CASE);
+        });
     }
 
     @Test
@@ -145,6 +173,40 @@ class ScoreboardTest {
 
         assertEquals(expected, scoreboard.getScores());
     }
+    @Test
+    void whenUpdateGame_givenExistingMatchHomeTeamWithLowerCase_thenUpdateTheGame() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+
+        //when
+        scoreboard.updateGame(HOME_TEAM_NAME_LOWER_CASE, AWAY_TEAM_NAME, 1, 2);
+
+        //then
+        var expected = new HashMap<String, Match>();
+        expected.put(HOME_TEAM_NAME, new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
+        expected.put(HOME_TEAM_NAME_2, new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
+
+        assertEquals(expected, scoreboard.getScores());
+    }
+    @Test
+    void whenUpdateGame_givenExistingMatchAwayTeamWithLowerCase_thenUpdateTheGame() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+
+        //when
+        scoreboard.updateGame(HOME_TEAM_NAME, AWAY_TEAM_NAME_LOWER_CASE, 1, 2);
+
+        //then
+        var expected = new HashMap<String, Match>();
+        expected.put(HOME_TEAM_NAME, new Match(HOME_TEAM_NAME, AWAY_TEAM_NAME, 1, 2));
+        expected.put(HOME_TEAM_NAME_2, new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
+
+        assertEquals(expected, scoreboard.getScores());
+    }
 
     @Test
     void whenUpdateGame_givenMatchWithNotExistingHomeTeam_thenThrowException() {
@@ -208,6 +270,40 @@ class ScoreboardTest {
 
         //when
         scoreboard.finishGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+
+        //then
+        var expected = new HashMap<String, Match>();
+        expected.put(HOME_TEAM_NAME_2, new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
+
+        assertEquals(expected, scoreboard.getScores());
+    }
+
+    @Test
+    void whenFinishGame_givenExistingMatchWithHomeTeamWithLowerCase_thenRemoveGameFromScoreboard() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+
+        //when
+        scoreboard.finishGame(HOME_TEAM_NAME_LOWER_CASE, AWAY_TEAM_NAME);
+
+        //then
+        var expected = new HashMap<String, Match>();
+        expected.put(HOME_TEAM_NAME_2, new Match(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2, 0, 0));
+
+        assertEquals(expected, scoreboard.getScores());
+    }
+
+    @Test
+    void whenFinishGame_givenExistingMatchWithAwayTeamWithLowerCase_thenRemoveGameFromScoreboard() {
+        //given
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
+        scoreboard.startNewGame(HOME_TEAM_NAME_2, AWAY_TEAM_NAME_2);
+
+        //when
+        scoreboard.finishGame(HOME_TEAM_NAME, AWAY_TEAM_NAME_LOWER_CASE);
 
         //then
         var expected = new HashMap<String, Match>();
