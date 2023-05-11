@@ -23,6 +23,10 @@ public class Scoreboard {
         log.info("Starting new game for homeTeam: {} and awayTeam: {}", homeTeam, awayTeam);
 
         validateTeamsNames(homeTeam, awayTeam);
+
+        homeTeam = homeTeam.toUpperCase();
+        awayTeam = awayTeam.toUpperCase();
+
         validateExistingGames(homeTeam, awayTeam);
 
         scores.put(homeTeam, Match.newTeam(homeTeam, awayTeam));
@@ -67,8 +71,8 @@ public class Scoreboard {
         }
     }
 
-    private static void validateTeamName(String homeTeam) {
-        if (Strings.isEmpty(homeTeam)) {
+    private static void validateTeamName(String team) {
+        if (Strings.isEmpty(team)) {
             log.error("Team name cannot be empty!");
             throw new IllegalArgumentException();
         }
@@ -84,6 +88,11 @@ public class Scoreboard {
 
     public void updateGame(String homeTeam, String awayTeam, int homeScore, int awayScore) {
         log.info("Update score of a match {} {} - {} {}", homeTeam, homeScore, awayTeam, awayScore);
+
+        validateTeamsNames(homeTeam, awayTeam);
+
+        homeTeam = homeTeam.toUpperCase();
+        awayTeam = awayTeam.toUpperCase();
 
         validateIfHomeTeamExists(homeTeam);
         validateIfMatchExists(homeTeam, awayTeam);
@@ -109,6 +118,11 @@ public class Scoreboard {
 
     public void finishGame(String homeTeam, String awayTeam) {
         log.info("Finish game between {} and {}", homeTeam, awayTeam);
+
+        validateTeamsNames(homeTeam, awayTeam);
+
+        homeTeam = homeTeam.toUpperCase();
+        awayTeam = awayTeam.toUpperCase();
 
         validateIfHomeTeamExists(homeTeam);
         validateIfMatchExists(homeTeam, awayTeam);

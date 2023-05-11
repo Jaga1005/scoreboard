@@ -14,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ScoreboardTest {
-    private static final String HOME_TEAM_NAME = "Gondor";
+    private static final String HOME_TEAM_NAME = "GONDOR";
     private static final String HOME_TEAM_NAME_LOWER_CASE = "gondor";
-    private static final String HOME_TEAM_NAME_2 = "Rohan";
-    private static final String AWAY_TEAM_NAME = "Mordor";
+    private static final String HOME_TEAM_NAME_2 = "ROHAN";
+    private static final String AWAY_TEAM_NAME = "MORDOR";
     private static final String AWAY_TEAM_NAME_LOWER_CASE = "mordor";
-    private static final String AWAY_TEAM_NAME_2 = "Shire";
+    private static final String AWAY_TEAM_NAME_2 = "SHIRE";
 
     @Test
     void whenStartNewGame_givenUniqueTeams_thenAddNewGameToScoreboard() {
@@ -43,7 +43,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(TeamAlreadyInMatchException.class, () -> {
+        assertThrows(MatchAlreadyStartedException.class, () -> {
             //when
             scoreboard.startNewGame(HOME_TEAM_NAME_LOWER_CASE, AWAY_TEAM_NAME);
         });
@@ -56,7 +56,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(TeamAlreadyInMatchException.class, () -> {
+        assertThrows(MatchAlreadyStartedException.class, () -> {
             //when
             scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME_LOWER_CASE);
         });
@@ -241,7 +241,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(MatchDoesntExistException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //when
             scoreboard.updateGame(null, AWAY_TEAM_NAME, 1, 2);
         });
@@ -254,7 +254,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(MatchDoesntExistException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //when
             scoreboard.updateGame(HOME_TEAM_NAME, null, 1, 2);
         });
@@ -345,7 +345,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(MatchDoesntExistException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //when
             scoreboard.finishGame(null, AWAY_TEAM_NAME);
         });
@@ -358,7 +358,7 @@ class ScoreboardTest {
         scoreboard.startNewGame(HOME_TEAM_NAME, AWAY_TEAM_NAME);
 
         //then
-        assertThrows(MatchDoesntExistException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             //when
             scoreboard.finishGame(HOME_TEAM_NAME, null);
         });
