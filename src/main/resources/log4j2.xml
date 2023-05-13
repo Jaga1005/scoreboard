@@ -11,10 +11,13 @@
         </File>
     </Appenders>
     <Loggers>
-        <Logger name="scoreboard" level="info" additivity="true">
+        <Logger name="Scoreboard" level="info" additivity="true">
             <AppenderRef ref="Console"/>
         </Logger>
-        <Logger name="match" level="info" additivity="true">
+        <Logger name="Match" level="info" additivity="true">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="TeamValidator" level="info" additivity="true">
             <AppenderRef ref="Console"/>
         </Logger>
         <Root level="info">

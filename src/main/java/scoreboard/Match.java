@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Objects;
 
 public class Match {
-    private static final Logger log = LogManager.getLogger("match");
+    private static final Logger log = LogManager.getLogger("Match");
     private final String homeTeam;
     private final String awayTeam;
     private final long startTime;
@@ -53,6 +53,13 @@ public class Match {
         return startTime;
     }
 
+    /**
+     * Updates score
+     * It throws a IllegalArgumentException if either homeScore or awayScore is lower than 0
+     *
+     * @param homeScore
+     * @param awayScore
+     */
     public void updateScore(int homeScore, int awayScore) {
         log.info("Update score of a match");
 
@@ -77,6 +84,9 @@ public class Match {
         }
     }
 
+    /**
+     * @return sum of homeTeamScore and awayTeamScore
+     */
     public int getTotalScore() {
         return homeTeamScore + awayTeamScore;
     }

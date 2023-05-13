@@ -2,23 +2,36 @@ package scoreboard;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
 import scoreboard.exceptions.MatchAlreadyStartedException;
 import scoreboard.exceptions.MatchDoesntExistException;
-import scoreboard.exceptions.NotUniquePairException;
 import scoreboard.exceptions.TeamAlreadyInMatchException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static scoreboard.TeamValidator.validateTeamsNames;
 
 public class Scoreboard {
-    private static final Logger log = LogManager.getLogger("scoreboard");
-    private static final int TOTAL_SCORES_ARE_EQUALS = 0;
-    private final Map<String, Match> scores;
+    private static final Logger log = LogManager.getLogger("Scoreboard");
+    private final Map<String, Match> matches;
 
     public Scoreboard() {
-        scores = new HashMap<>();
+        matches = new HashMap<>();
     }
 
+    /**
+     * Adds new game to Scoreboard.
+     * Note: It converts given team names to upper case.
+     * It throws an IllegalArgumentExceptions if either homeTeam or awayTeam name are null or empty
+     * It throws a NotUniquePairException if teams names are the same
+     * It throws a MatchAlreadyStartedException if match for homeTeam and AwayTeam already exists
+     * It throws a TeamAlreadyInMatchException if homeTeam or awayTeam has already different match in progress
+     *
+     * @param homeTeam
+     * @param awayTeam
+     */
     public void startNewGame(String homeTeam, String awayTeam) {
         log.info("Starting new game for homeTeam: {} and awayTeam: {}", homeTeam, awayTeam);
 
@@ -29,7 +42,7 @@ public class Scoreboard {
 
         validateExistingGames(homeTeam, awayTeam);
 
-        scores.put(homeTeam, Match.newTeam(homeTeam, awayTeam));
+        matches.put(homeTeam, Match.newTeam(homeTeam, awayTeam));
 
         log.info("Game for {} and {} added successfully", homeTeam, awayTeam);
     }
@@ -42,6 +55,17 @@ public class Scoreboard {
         checkIfTeamHasAlreadyStartedDifferentGame(awayTeam);
     }
 
+    private void checkIfTeamsHaveAlreadyStartedGame(String homeTeam, String awayTeam) {
+        if (matches.containsKey(homeTeam) && checkIfHomeTeamIsPlayingWithAwayTeam(homeTeam, awayTeam)) {
+            log.error("Teams {} and {} have already started a match!", homeTeam, awayTeam);
+            throw new MatchAlreadyStartedException();
+        }
+    }
+
+    private boolean checkIfHomeTeamIsPlayingWithAwayTeam(String homeTeam, String awayTeam) {
+        return matches.get(homeTeam).getAwayTeam().equals(awayTeam);
+    }
+
     private void checkIfTeamHasAlreadyStartedDifferentGame(String team) {
         if (checkIfTeamHasStartedGame(team)) {
             log.error("Team {} has already started a match!", team);
@@ -49,43 +73,26 @@ public class Scoreboard {
         }
     }
 
-    private void checkIfTeamsHaveAlreadyStartedGame(String homeTeam, String awayTeam) {
-        if (scores.containsKey(homeTeam) && scores.get(homeTeam).getAwayTeam().equals(awayTeam)) {
-            log.error("Teams {} and {} have already started a match!", homeTeam, awayTeam);
-            throw new MatchAlreadyStartedException();
-        }
-    }
-
-    private static void validateTeamsNames(String homeTeam, String awayTeam) {
-        log.info("Validate team names");
-
-        validateTeamName(homeTeam);
-        validateTeamName(awayTeam);
-        validateIfTeamsAreDifferent(homeTeam, awayTeam);
-    }
-
-    private static void validateIfTeamsAreDifferent(String homeTeam, String awayTeam) {
-        if (homeTeam.equalsIgnoreCase(awayTeam)) {
-            log.error("HomeTeam cannot be the same as awayTeam!");
-            throw new NotUniquePairException();
-        }
-    }
-
-    private static void validateTeamName(String team) {
-        if (Strings.isEmpty(team)) {
-            log.error("Team name cannot be empty!");
-            throw new IllegalArgumentException();
-        }
-    }
-
     private boolean checkIfTeamHasStartedGame(String team) {
-        return scores.containsKey(team) || checkIfTeamPlaysAsAwayTeam(team);
+        return matches.containsKey(team) || checkIfTeamPlaysAsAwayTeam(team);
     }
 
     private boolean checkIfTeamPlaysAsAwayTeam(String team) {
-        return scores.values().stream().anyMatch(t -> t.getAwayTeam().equalsIgnoreCase(team));
+        return matches.values().stream().anyMatch(t -> t.getAwayTeam().equals(team));
     }
 
+    /**
+     * Updates existing game score.
+     * Note: It converts given team names to upper case.
+     * It validates teams names
+     * It throws a MatchDoesntExistException if homeTeam doesn't have any match
+     * It throws a MatchDoesntExistException if match between homeTeam and awayTeam doesn't exist
+     *
+     * @param homeTeam
+     * @param awayTeam
+     * @param homeScore
+     * @param awayScore
+     */
     public void updateGame(String homeTeam, String awayTeam, int homeScore, int awayScore) {
         log.info("Update score of a match {} {} - {} {}", homeTeam, homeScore, awayTeam, awayScore);
 
@@ -97,25 +104,36 @@ public class Scoreboard {
         validateIfHomeTeamExists(homeTeam);
         validateIfMatchExists(homeTeam, awayTeam);
 
-        scores.get(homeTeam).updateScore(homeScore, awayScore);
+        matches.get(homeTeam).updateScore(homeScore, awayScore);
 
         log.info("Match score updated!");
     }
 
-    private void validateIfMatchExists(String homeTeam, String awayTeam) {
-        if (!scores.get(homeTeam).getAwayTeam().equalsIgnoreCase(awayTeam)) {
-            log.error("Match between HomeTeam {} and AwayTeam {} doesn't exist", homeTeam, awayTeam);
-            throw new MatchDoesntExistException();
-        }
-    }
-
     private void validateIfHomeTeamExists(String homeTeam) {
-        if (!scores.containsKey(homeTeam)) {
+        if (!matches.containsKey(homeTeam)) {
             log.error("HomeTeam {} doesn't exist!", homeTeam);
             throw new MatchDoesntExistException();
         }
     }
 
+    private void validateIfMatchExists(String homeTeam, String awayTeam) {
+        if (!checkIfHomeTeamIsPlayingWithAwayTeam(homeTeam, awayTeam)) {
+            log.error("Match between HomeTeam {} and AwayTeam {} doesn't exist", homeTeam, awayTeam);
+            throw new MatchDoesntExistException();
+        }
+    }
+
+    /**
+     * Removes existing game from Scoreboard
+     * Note: It converts given team names to upper case.
+     * It throws an IllegalArgumentExceptions if either homeTeam or awayTeam name is null or empty
+     * It throws a NotUniquePairException if teams names are the same
+     * It throws a MatchDoesntExistException if homeTeam doesn't have any match
+     * It throws a MatchDoesntExistException if match between homeTeam and awayTeam doesn't exist
+     *
+     * @param homeTeam
+     * @param awayTeam
+     */
     public void finishGame(String homeTeam, String awayTeam) {
         log.info("Finish game between {} and {}", homeTeam, awayTeam);
 
@@ -127,39 +145,24 @@ public class Scoreboard {
         validateIfHomeTeamExists(homeTeam);
         validateIfMatchExists(homeTeam, awayTeam);
 
-        scores.remove(homeTeam);
+        matches.remove(homeTeam);
     }
 
+    /**
+     * Sorts existing matches by total score in descending order, then sorts by start time in ascending order
+     *
+     * @return sorted list of existing matches
+     */
     public List<Match> getSummary() {
         log.info("Get scoreboard summary");
 
-        ArrayList<Match> list = new ArrayList<>(scores.values());
-        sortList(list);
+        List<Match> list = new ArrayList<>(matches.values());
+        list.sort(new MatchComparator());
 
         return list;
     }
 
-    private static void sortList(ArrayList<Match> list) {
-        list.sort((match1, match2) -> {
-            int compareTotalScores = compareByTotalScoreDesc(match1, match2);
-
-            if (compareTotalScores == TOTAL_SCORES_ARE_EQUALS) {
-                return compareByStartTimeAsc(match1, match2);
-            }
-
-            return compareTotalScores;
-        });
-    }
-
-    private static int compareByStartTimeAsc(Match match1, Match match2) {
-        return Long.compare(match1.getStartTime(), match2.getStartTime());
-    }
-
-    private static int compareByTotalScoreDesc(Match match1, Match match2) {
-        return Integer.compare(match2.getTotalScore(), match1.getTotalScore());
-    }
-
     Map<String, Match> getScores() {
-        return scores;
+        return matches;
     }
 }
